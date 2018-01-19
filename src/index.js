@@ -3,10 +3,13 @@ import './index.css'
 import React from 'react'
 import {render} from 'react-dom'
 
-import App from './demo01'
+import App from './demo02'
 
 // ReactDOM.render 是 React 的最基本方法，用于将模板转为 HTML 语言，并插入指定的 DOM 节点。
 render(
-  <App/>,
+  <App>
+    <span>1</span>
+    <span>2</span>
+  </App>,
   document.querySelector('#app')
 )
