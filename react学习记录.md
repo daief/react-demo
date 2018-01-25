@@ -280,7 +280,7 @@ class Display extends React.Component {
 
   // 一般在该周期函数中进行网络请求实例化
   componentDidMount() {
-    // 此处接受父组件传递的对象，也可直接在此发起请求v
+    // 此处接受父组件传递的对象，也可直接在此发起请求
     this.props.promise.then(res => res.json())
       .then(value => this.setState({loading: false, data: value}))
       .catch(error => this.setState({loading: false, error: error}))
