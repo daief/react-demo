@@ -405,3 +405,71 @@ export default observer(class Component2 extends Component {
   }
 })
 ```
+
+### react-router
+
+[官方文档](https://reacttraining.com/react-router/web/api)
+
+Demo09 -- use react-router-dom
+
+BrowserRouter 与 HashRouter：
+- BrowserRouter：需要后端配合，url 中不会出现 #
+- HashRouter：后端无需进行配置，url 中使用 # 进行路由
+
+excat属性：
+- 精确匹配的时候再渲染，`<Route exact path="/" component={Home}/>`
+
+基本使用：
+```javascript
+import React from 'react'
+import {
+  HashRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
+
+// home component
+const Home = () => (
+  <div>
+    <h2>Home</h2>
+  </div>
+)
+
+const About = () => (
+  <div>
+    <h2>About</h2>
+  </div>
+)
+
+export default class Demo09 extends React.Component {
+  render() {
+    return (
+      <div>
+        Demo09
+        <Router>
+          <div>
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about">About</Link></li>
+            </ul>
+
+            {/* exact 精确匹配 */}
+            <Route exact path="/" component={Home}/>
+            <Route path="/about" component={About}/>
+          </div>
+        </Router>
+      </div>
+    )
+  }
+}
+```
+Switch 组件：
+- 包含一组 Route，只渲染第一个匹配的路由，如上述例子不加`exact`，Home 组件一直会被渲染
+
+match 对象：
+- 包含路由信息
+
+withRouter 方法：
+- 将组件包含并返回，组件内可以访问 match, location, history 对象
+  > You can get access to the history object’s properties and the closest <Route>'s match via the withRouter higher-order component. withRouter will re-render its component every time the route changes with the same props as <Route> render props: { match, location, history }.
+
