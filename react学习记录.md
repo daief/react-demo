@@ -324,7 +324,7 @@ import {
   // 使用注解的话直接用这个
   observable, 
   // 不使用@注解的时候用该方法
-  extendObservable
+  extendObservable,
   computed, 
   autorun,
   action,
