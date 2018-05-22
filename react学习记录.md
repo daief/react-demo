@@ -15,7 +15,7 @@ render(
 ### JSX 语法
 
 jsx，支持 html 和 js 得混写，html 直接写在 js 之中，遇到 HTML 标签（以`<`开头），就用 HTML 规则解析；遇到代码块（以`{`开头），就用 JavaScript 规则解析
-    
+
 ```javascript
 
 import React from 'react'
@@ -322,10 +322,10 @@ class Display extends React.Component {
 // store.js
 import {
   // 使用注解的话直接用这个
-  observable, 
+  observable,
   // 不使用@注解的时候用该方法
   extendObservable,
-  computed, 
+  computed,
   autorun,
   action,
   useStrict
@@ -473,3 +473,128 @@ withRouter 方法：
 - 将组件包含并返回，组件内可以访问 match, location, history 对象
   > You can get access to the history object’s properties and the closest <Route>'s match via the withRouter higher-order component. withRouter will re-render its component every time the route changes with the same props as <Route> render props: { match, location, history }.
 
+### redux
+
+#### redux & react-redux
+
+#### 要点
+
+应用中所有`state`都以一个对象树的形式存在一个单一的`store`中。**唯一改变`state`的方式是触发`action`**，一个描述发生什么的对象。为了描述`action`如何改变`state`树，需要编写`reducers`。
+
+#### Action
+本质是 JS 普通对象，约定，**`action`内必须使用一个字符串类型的`type`字段来表示将要执行的动作**。
+```javascript
+{
+  type: 'TOGGLE_TODO',
+  // params
+  index: 5
+}
+```
+
+##### Action 创建函数
+生成 action 的方法。
+
+```js
+// Action 创建函数
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    text,
+  }
+}
+
+// 发起 dispatch
+store.dispatch(addTodo(text))
+```
+
+> `store` 里能直接通过 `store.dispatch() `调用 `dispatch()` 方法，但是多数情况下你会使用 `react-redux` 提供的 `connect()` 帮助器来调用。`bindActionCreators()` 可以自动把多个 `action` 创建函数 绑定到 `dispatch()` 方法上。
+
+##### 异步 action
+
+使用`redux-thunk`中间件，通过使用指定的 `middleware`，`action` 创建函数除了返回 `action` 对象外还可以返回函数。这时，这个` action` 创建函数就成为了 `thunk`。
+
+当 action 创建函数返回函数时，这个函数会被 Redux Thunk middleware 执行。**这个函数并不需要保持纯净，它还可以带有副作用，包括执行异步 API 请求**。这个函数还可以 dispatch action，就像 dispatch 前面定义的同步 action 一样。
+
+#### Reducer
+reducer 就是一个纯函数，接收旧的 state 和 action，返回新的 state。
+
+```js
+(previousState, action) => newState
+```
+
+> 保持 reducer 纯净非常重要。永远不要在 reducer 里做这些操作：
+> 1. 修改传入参数；
+> 2. 执行有副作用的操作，如 API 请求和路由跳转；
+> 3. 调用非纯函数，如 Date.now() 或 Math.random()。
+
+**只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。**
+
+##### 拆分 Reducer
+
+**注意每个 reducer 只负责管理全局 state 中它负责的一部分。每个 reducer 的 state 参数都不同，分别对应它管理的那部分 state 数据。**
+
+```js
+const todos = (state = [], action) => {
+  switch(action.type) {
+    case 'ADD_TODO':
+      // return new todo list
+      return newTodoArr;
+    default:
+      return state;
+  }
+}
+
+const visibilityFilter = (state = 'SHOW_ALL', action) => {
+  // ...
+}
+
+// combineReducers 帮助合并 reducers
+const rootReducer = combineReducers({
+  todos,
+  visibilityFilter,
+});
+
+// combineReducers 的合成等价如下
+// const rootReducer = (state = {}, action) => {
+//   return {
+//     visibilityFilter: visibilityFilter(state.visibilityFilter, action),
+//     todos: todos(state.todos, action)
+//   }
+// }
+
+```
+
+你也可以给它们设置不同的 key，或者调用不同的函数。下面两种合成 reducer 方法完全等价：
+```js
+const reducer = combineReducers({
+  a: doSomethingWithA,
+  b: processB,
+  c: c
+})
+
+function reducer(state = {}, action) {
+  return {
+    a: doSomethingWithA(state.a, action),
+    b: processB(state.b, action),
+    c: c(state.c, action)
+  }
+}
+```
+
+#### Store
+
+action 来描述“发生了什么”，和使用 reducers 来根据 action 更新 state 的用法。
+
+`Store` 就是把它们联系到一起的对象。Store 有以下职责：
+- 维持应用的 state；
+- 提供 getState() 方法获取 state；
+- 提供 dispatch(action) 方法更新 state；
+- 通过 subscribe(listener) 注册监听器;
+- 通过 subscribe(listener) 返回的函数注销监听器。
+
+**再次强调一下 Redux 应用只有一个单一的 store。**
+
+`createStore()` 的第二个参数是可选的, 用于设置 state 初始状态。
+```js
+const store = createStore(todoApp, window.STATE_FROM_SERVER);
+```
