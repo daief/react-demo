@@ -598,3 +598,91 @@ action 来描述“发生了什么”，和使用 reducers 来根据 action 更�
 ```js
 const store = createStore(todoApp, window.STATE_FROM_SERVER);
 ```
+
+#### 在 React 中使用
+
+##### Store 注入（姑且这么说）
+所有容器组件都可以访问 Redux store，所以可以手动监听它。一种方式是把它以 props 的形式传入到所有容器组件中。但这太麻烦了，因为必须要用 store 把展示组件包裹一层，仅仅是因为恰好在组件树中渲染了一个容器组件。
+
+建议的方式是使用指定的 React Redux 组件 <Provider> 来让所有容器组件都可以访问 store，而不必显示地传递它。只需要在渲染根组件时使用即可。
+```js
+import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from './store';
+import App from './components/App';
+
+
+class Index extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <App />
+      </Provider>
+    )
+  }
+}
+
+export default DemoIndex10
+
+```
+
+##### 展示组件 & 容器组件
+创建容器组件把这些展示组件和 Redux 关联起来。建议使用 React Redux 库的 connect() 方法来生成，这个方法做了性能优化来避免很多不必要的重复渲染。（这样你就不必为了性能而手动实现 React 性能优化建议 中的 shouldComponentUpdate 方法。）
+
+使用 connect() 前，需要先定义 mapStateToProps 这个函数来指定如何把当前 Redux store state 映射到展示组件的 props 中。
+
+```js
+// Link.js ------------- 展示组件
+import React from 'react';
+
+const Link = ({ active, children, onClick }) => {
+  if (active) {
+    return <span>{children}</span>;
+  }
+
+  return (
+    <a
+      onClick={e => {
+        e.preventDefault()
+        onClick()
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
+export default Link;
+
+
+// FilterLink.js ------------- 容器组件
+import { connect } from 'react-redux';
+import { setVisibilityFilter } from '../../actions';
+import Link from '../Link';
+
+// 指定如何把当前 Redux store state 映射到展示组件的 props 中
+const mapStateToProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter === state.visibilityFilter,
+  };
+};
+
+// 定义 mapDispatchToProps() 方法接收 dispatch() 方法
+// 并返回期望注入到展示组件的 props 中的回调方法
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    onClick: () => {
+      dispatch(setVisibilityFilter(ownProps.filter))
+    },
+  };
+};
+
+// 使用 connect
+const FilterLink = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Link);
+
+// 如此一来 Link 组件的 props 中就能获取 active & onClick
+export default FilterLink;
+```
