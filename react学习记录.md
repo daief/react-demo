@@ -622,7 +622,7 @@ class Index extends React.Component {
   }
 }
 
-export default DemoIndex10
+export default Index
 
 ```
 
