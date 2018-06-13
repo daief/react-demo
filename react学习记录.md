@@ -307,7 +307,7 @@ class Display extends React.Component {
 }
 ```
 
-### Mobx
+### Mobx（Demo08）
 [中文文档](http://cn.mobx.js.org/)
 
 基本使用：
@@ -317,7 +317,7 @@ class Display extends React.Component {
 - action：严格模式下唯一更改状态的方法
 - useStrict：开启严格模式
 
-
+#### 创建 store
 ```javascript
 // store.js
 import {
@@ -368,8 +368,8 @@ export {
   store
 }
 ```
-
-然后要把组件注册成观察者（observer）：
+#### 组件响应数据的变化
+1. 然后要把组件注册成观察者（observer）：
 ```javascript
 // Component.js
 import React, {
@@ -404,6 +404,62 @@ export default observer(class Component2 extends Component {
     )
   }
 })
+```
+
+2. 通过`Provider`、`inject`、`observer`在组件内通过`props`获取`store`：
+```js
+// 一般在根组件注入 store
+import {
+  store
+} from './store'
+import { Provider } from 'mobx-react'
+
+export default class demo08 extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <div className="app">
+          <Component1 />
+          <Component2 />
+        </div>
+      </Provider>
+    )
+  }
+}
+
+// 在需要用到的地方
+import {
+  observer,
+  inject,
+} from 'mobx-react'
+
+// 可通过 inject、observer，在组件内通过 props 拿到 store
+export default inject('store')(observer(class Component1 extends React.Component {
+  render() {
+    // we can get store here
+    const {store} = this.props
+    return (
+      <div>
+        Component1
+      </div>
+    )
+  }
+}))
+
+// 注解的写法（推荐）
+// @inject('store')
+// @observer
+// export default class Component1 extends React.Component {
+//   render() {
+//     // we can get store here
+//     const {store} = this.props
+//     return (
+//       <div>
+//         Component1
+//       </div>
+//     )
+//   }
+// }
 ```
 
 ### react-router
@@ -473,7 +529,7 @@ withRouter 方法：
 - 将组件包含并返回，组件内可以访问 match, location, history 对象
   > You can get access to the history object’s properties and the closest <Route>'s match via the withRouter higher-order component. withRouter will re-render its component every time the route changes with the same props as <Route> render props: { match, location, history }.
 
-### redux
+### redux (Demo10)
 
 #### redux & react-redux
 
