@@ -686,3 +686,11 @@ const FilterLink = connect(
 // 如此一来 Link 组件的 props 中就能获取 active & onClick
 export default FilterLink;
 ```
+
+### 动画——[react-motion](https://github.com/chenglou/react-motion) （Demo13）
+
+- `spring: (val: number, config?: SpringHelperConfig)`
+  Specifies the how to animate to the destination value, e.g. spring(10, {stiffness: 120, damping: 17}) means "animate to value 10, with a spring of stiffness 120 and damping 17".
+- `Motion`适合编写单个组件的动画
+- `StaggeredMotion`实现一个联动动画
+- `TransitionMotion`适用于组件装载和卸载时的动画
