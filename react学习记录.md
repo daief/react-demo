@@ -242,7 +242,7 @@ export default class Demo06 extends React.Component {
 - shouldComponentUpdate(object nextProps, object nextState)
 - componentWillUpdate(object nextProps, object nextState)
 - render()
-- componentDidUpdate(object nextProps, object nextState)
+- componentDidUpdate(object preProps, object preState)
 
 #### Unmounting(卸载)
 当一个组件从 DOM 中删除时，这个方法将被调用：
