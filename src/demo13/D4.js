@@ -1,3 +1,7 @@
+/**
+ * demo4:
+ * TransitionMotion 用于组件装载和卸载时的动画
+ */
 import React from 'react';
 import {TransitionMotion, spring} from 'react-motion'
 
