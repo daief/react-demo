@@ -751,9 +751,15 @@ export default FilterLink;
 - `StaggeredMotion`实现一个联动动画
 - `TransitionMotion`适用于组件装载和卸载时的动画
 
-### 路由按需加载 (Demo14)
+### 路由按需加载 (Demo14) 代码拆分
 
 > from: https://blog.csdn.net/mjzhang1993/article/details/79094594
+
+#### bundle-loader 方式
+安装`bundle-loader`：
+```bash
+yarn add bundle-loader --dev
+```
 
 创建包装组件`Bundle` & 包装组件的方法
 ```js
@@ -829,7 +835,81 @@ export default () => (
 
 ```
 
+ps: 打包后的代码分别由 name 自动命名
 
+#### 使用 import() 方法代替 bundle-loader 实现
+> import('../xxx.js') 返回的是一个 promise，因此需要改写 Bundle 组件，此外不在需要 bundle-loader ，其在 webpack 中的配置应该删除
+
+创建包装组件Bundle & 包装组件的方法
+```js
+export default class Bundle extends React.Component {
+  state = {
+    mode: null,
+  }
+
+  componentWillMount() {
+    this.load(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.load !== this.props.load) {
+      this.load(nextProps);
+    }
+  }
+
+  load = async (props) => {
+    this.setState({
+      mod: null
+    });
+    /*
+      使用 props.load() 返回的是一个 promise
+      */
+    const mod = await props.load();
+
+    this.setState({
+      mod: mod.default ? mod.default : mod
+    });
+  }
+
+  render() {
+    return this.state.mod ? this.props.children(this.state.mod) : null;
+  }
+}
+
+// 默认加载组件，可以直接返回 null
+const Loading = () => <div>Loading...</div>;
+
+/*
+  包装方法，第一次调用后会返回一个组件（函数式组件）
+  由于要将其作为路由下的组件，所以需要将 props 传入
+*/
+export const lazyLoad = (loadComponent) => (props) => (
+  <Bundle load={loadComponent}>
+    { Comp => (Comp ? <Comp {...props} /> : <Loading />) }
+  </Bundle>
+);
+```
+
+在`Router`中使用
+```js
+import { lazyLoad } from './Bundle.import';
+
+// 更改组件导入的方式
+const Page1 = lazyLoad(() => import('./pages/Page1'));
+const Page2 = lazyLoad(() => import('./pages/Page2'));
+
+export default () => (
+  <Router>
+    <Switch>
+      <Route path="/1" component={Page1} />
+      <Route path="/2" component={Page2} />
+    </Switch>
+  </Router>
+);
+
+```
+
+ps: 打包后的代码自动由数字命名
 
 ### 分析 webpack 打包后的文件 （webpack-bundle-analyzer）
 

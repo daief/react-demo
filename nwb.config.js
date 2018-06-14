@@ -14,6 +14,6 @@ module.exports = {
     },
     define: {
       PRODUCTION: ENV.NODE_ENV === 'production'
-    }
-  }
+    },
+  },
 }
