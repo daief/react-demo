@@ -750,3 +750,137 @@ export default FilterLink;
 - `Motion`适合编写单个组件的动画
 - `StaggeredMotion`实现一个联动动画
 - `TransitionMotion`适用于组件装载和卸载时的动画
+
+### 路由按需加载 (Demo14)
+
+> from: https://blog.csdn.net/mjzhang1993/article/details/79094594
+
+创建包装组件`Bundle` & 包装组件的方法
+```js
+export default class Bundle extends React.Component {
+  state = {
+    mod: null
+  }
+
+  componentWillMount() {
+    this.load(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.load !== this.props.load) {
+      this.load(nextProps);
+    }
+  }
+
+  // load 方法，用于更新 mod 状态
+  load(props) {
+    // 初始化
+    this.setState({
+      mod: null
+    });
+    /*
+      调用传入的 load 方法，并传入一个回调函数
+      这个回调函数接收 在 load 方法内部异步获取到的组件，并将其更新为 mod
+    */
+    props.load(mod => {
+      this.setState({
+        mod: mod.default ? mod.default : mod
+      });
+    });
+  }
+
+  render() {
+    /*
+      将存在状态中的 mod 组件作为参数传递给当前包装组件的'子'
+    */
+    return this.state.mod ? this.props.children(this.state.mod) : null;
+  }
+}
+
+// 默认加载组件，可以直接返回 null
+const Loading = () => <div>Loading...</div>;
+
+/*
+  包装方法，第一次调用后会返回一个组件（函数式组件）
+  由于要将其作为路由下的组件，所以需要将 props 传入
+*/
+export const lazyLoad = (loadComponent) => (props) => (
+  <Bundle load={loadComponent}>
+    { Comp => (Comp ? <Comp {...props} /> : <Loading />) }
+  </Bundle>
+);
+```
+
+在`Router`中使用
+```js
+import { lazyLoad } from './Bundle';
+// 修改 import Page1 from './pages/Page1'
+import Page1 from 'bundle-loader?lazy&name=page1!./pages/Page1';
+import Page2 from 'bundle-loader?lazy&name=page2!./pages/Page2';
+
+export default () => (
+  <Router>
+    <Switch>
+      <Route path="/1" component={lazyLoad(Page1)} />
+      <Route path="/2" component={lazyLoad(Page2)} />
+    </Switch>
+  </Router>
+);
+
+```
+
+
+
+### 分析 webpack 打包后的文件 （webpack-bundle-analyzer）
+
+作为 webpack 的插件来使用
+```js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ]
+}
+```
+ps: 在 nwb 下，build 的时候无法打开分析页面，修改 ./node_modules/nwb/lib/bin/nwb.js :
+```js
+#!/usr/bin/env node
+'use strict';
+
+var _chalk = require('chalk');
+
+var _cli = require('../cli');
+
+var _cli2 = _interopRequireDefault(_cli);
+
+var _errors = require('../errors');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function handleError(error) {
+  if (error instanceof _errors.UserError) {
+    console.error((0, _chalk.red)(error.message));
+  } else if (error instanceof _errors.ConfigValidationError) {
+    error.report.log();
+  } else if (error instanceof _errors.KarmaExitCodeError) {
+    console.error((0, _chalk.red)(`Karma exit code was ${error.exitCode}`));
+  } else {
+    console.error((0, _chalk.red)(`Error running command: ${error.message}`));
+    if (error.stack) {
+      console.error(error.stack);
+    }
+  }
+  process.exit(1);
+}
+
+try {
+  (0, _cli2.default)(process.argv.slice(2), function (err) {
+    if (err) handleError(err);
+    // 注释这行
+    // process.exit(0);
+  });
+} catch (e) {
+  handleError(e);
+}
+```
