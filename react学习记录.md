@@ -838,6 +838,7 @@ export default () => (
 ps: 打包后的代码分别由 name 自动命名
 
 #### 使用 import() 方法代替 bundle-loader 实现
+> 类似的写法：https://tylermcginnis.com/react-router-code-splitting/
 > import('../xxx.js') 返回的是一个 promise，因此需要改写 Bundle 组件，此外不在需要 bundle-loader ，其在 webpack 中的配置应该删除
 
 创建包装组件Bundle & 包装组件的方法
@@ -910,6 +911,24 @@ export default () => (
 ```
 
 ps: 打包后的代码自动由数字命名
+
+#### [react-loadable](https://github.com/jamiebuilds/react-loadable) 以组件为中心的代码分割和懒加载
+推荐使用
+simple use
+```js
+import Loadable from 'react-loadable';
+
+const LoadableComponent = Loadable({
+  loader: () => import('./my-component'),
+  loading: () => <p>loading</p>,
+});
+
+export default class App extends React.Component {
+  render() {
+    return <LoadableComponent/>;
+  }
+}
+```
 
 ### 分析 webpack 打包后的文件 （webpack-bundle-analyzer）
 
