@@ -1,6 +1,6 @@
 import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
-import { passiveSupported } from '../utils/browser';
+import { passiveSupported } from '../utils/browser'
 
 const preventDefault = e => e.preventDefault()
 

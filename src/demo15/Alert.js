@@ -1,5 +1,6 @@
 import React from 'react'
 import Singleton, { preventScroll, recoverScroll } from './Singleton'
+import { TransitionMotion, spring } from 'react-motion'
 
 export default class Alert extends React.Component {
   state = {
@@ -19,22 +20,42 @@ export default class Alert extends React.Component {
     recoverScroll()
   }
 
+  willEnter = () => ({ opacity: 0 })
+
+  willLeave = () => ({ opacity: spring(0) })
+
   render() {
-    return this.state.show ? (
-      <div className="Alert">
-        <div className="mask"/>
-        <div className="container">
-          Alert
-          <button onClick={() => {
-            alert
-              .hide()
-              .catch(() => {
-                this.setState({ show: false });
-              });
-          }}>close</button>
-        </div>
-      </div>
-    ) : null;
+    const {show} = this.state;
+
+    return (
+      <TransitionMotion
+        styles={ show ? [{ key: 'alert', style: { opacity: spring(1) }}] : []}
+        willEnter={this.willEnter}
+        willLeave={this.willLeave}
+      >
+        {
+          (interpolatedStyles) => (
+            interpolatedStyles[0] ? (
+              // Alert begin
+              <div className="Alert" style={{ opacity: interpolatedStyles[0].style.opacity }}>
+                <div className="mask"/>
+                <div className="container">
+                  Alert
+                  <button onClick={() => {
+                    alert
+                      .hide()
+                      .catch(() => {
+                        this.setState({ show: false });
+                      });
+                  }}>close</button>
+                </div>
+              </div>
+              // Alert end
+            ) : null
+          )
+        }
+      </TransitionMotion>
+    );
   }
 }
 
