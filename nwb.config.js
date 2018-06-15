@@ -15,5 +15,16 @@ module.exports = {
     define: {
       PRODUCTION: ENV.NODE_ENV === 'production'
     },
+    extra: {
+      resolve: {
+        // Add `.ts` and `.tsx` as a resolvable extension.
+        extensions: [".ts", ".tsx"]
+      },
+      module: {
+        rules: [
+          { test: /\.tsx?$/, loader: "ts-loader" }
+        ],
+      },
+    },
   },
 }
