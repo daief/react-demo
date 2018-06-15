@@ -15,6 +15,10 @@ export default class Alert extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    recoverScroll()
+  }
+
   render() {
     return this.state.show ? (
       <div className="Alert">

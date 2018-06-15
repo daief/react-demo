@@ -983,3 +983,132 @@ try {
   handleError(e);
 }
 ```
+
+### 单例模式 alert，可使用 alert.show() 进行调用 (Demo15)
+1. 创建`Alert`组件
+```js
+import Singleton, { preventScroll, recoverScroll } from './Singleton'
+
+export default class Alert extends React.Component {
+  state = {
+    show: false,
+  }
+
+  componentDidUpdate(_, preState) {
+    const { show } = this.state;
+    if (preState.show !== show && show) {
+      // 弹框显示的时候禁止页面滚动
+      preventScroll()
+    } else {
+      // 恢复页面滚动
+      recoverScroll()
+    }
+  }
+
+  componentWillUnmount() {
+    recoverScroll()
+  }
+
+  render() {
+    return this.state.show ? (
+      <div className="Alert">
+        <div className="mask"/>
+        <div className="container">
+          Alert
+          <button onClick={() => {
+            alert
+              .hide()
+              .catch(() => {
+                this.setState({ show: false });
+              });
+          }}>close</button>
+        </div>
+      </div>
+    ) : null;
+  }
+}
+// 导出单例对象
+export const alert = new Singleton(Alert)
+```
+
+2. `Singleton.js`
+```js
+import {render, unmountComponentAtNode} from 'react-dom'
+import { passiveSupported } from '../utils/browser';
+
+const preventDefault = e => e.preventDefault()
+
+export const preventScroll = () => {
+  window.addEventListener('touchmove', preventDefault, passiveSupported ? { passive: false } : false)
+}
+
+export const recoverScroll = () => {
+  window.removeEventListener('touchmove', preventDefault, passiveSupported ? { passive: false } : false)
+}
+
+export default class Singleton {
+  constructor(component) {
+    this.dom = null
+    this.component = component
+    this.instance = null
+  }
+
+  show = (option) => {
+    if (!this.dom) {
+      this.dom = document.createElement('div')
+      document.body.appendChild(this.dom)
+    }
+
+    this.instance = render(<this.component {...option} />, this.dom)
+
+    this.instance &&
+      this.instance.setState({
+        show: true,
+      })
+  }
+
+  hide = () => {
+    return new Promise((resolve, reject) => {
+      if (this.instance) {
+        this.instance.setState({
+          show: false,
+        }, () => {
+          window.setTimeout(() => {
+            unmountComponentAtNode(this.dom)
+            resolve()
+          }, 100)
+        })
+      } else {
+        reject()
+      }
+    })
+  }
+}
+
+```
+
+3. `browser.js`
+> [passive event](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)，当绑定事件的时候设置了`{ passive: true }`，那么在事件中调用`preventDefault()`将无效。[相关文章](https://juejin.im/post/5ad804c1f265da504547fe68)。
+
+```js
+// 浏览器是否支持 passive
+export const passiveSupported = (() => {
+  let passiveSupported = false;
+
+  try {
+    const opt = Object.defineProperty({}, 'passive', {
+      get: () => {
+        passiveSupported = true;
+      },
+    });
+
+    window.addEventListener('test', null, opt);
+    window.removeEventListener('test', null, opt);
+  } catch (error) {
+    passiveSupported = false;
+  }
+
+  return passiveSupported;
+})();
+```
+
