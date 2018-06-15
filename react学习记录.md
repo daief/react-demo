@@ -1111,4 +1111,42 @@ export const passiveSupported = (() => {
   return passiveSupported;
 })();
 ```
+4. 借助之前的 react-motion 给 Alert 添加动画（淡入淡出），修改 Alert.js：
+```js
+import Singleton, { preventScroll, recoverScroll } from './Singleton'
+import { TransitionMotion, spring } from 'react-motion'
+
+export default class Alert extends React.Component {
+  // ......
+
+  willEnter = () => ({ opacity: 0 })
+
+  willLeave = () => ({ opacity: spring(0) })
+
+  render() {
+    const {show} = this.state;
+
+    return (
+      <TransitionMotion
+        styles={ show ? [{ key: 'alert', style: { opacity: spring(1) }}] : []}
+        willEnter={this.willEnter}
+        willLeave={this.willLeave}
+      >
+        {
+          (interpolatedStyles) => (
+            interpolatedStyles[0] ? (
+              // Alert begin
+              <div className="Alert" style={{ opacity: interpolatedStyles[0].style.opacity }}>
+                {/* ....... */}
+              </div>
+              // Alert end
+            ) : null
+          )
+        }
+      </TransitionMotion>
+    );
+  }
+}
+
+```
 
