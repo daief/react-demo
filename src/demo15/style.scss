@@ -1,0 +1,32 @@
+li {
+  height: 35px;
+  line-height: 35px;
+}
+
+.mask {
+  background-color: rgba(0,0,0,0.3);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.Alert {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+
+  .container {
+    position: absolute;
+    width: 55%;
+    height: 200px;
+    background-color: #fff;
+    z-index: 1001;
+    left: 22.5%;
+    top: 30%;
+  }
+}
