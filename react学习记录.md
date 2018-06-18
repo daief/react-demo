@@ -1150,3 +1150,60 @@ export default class Alert extends React.Component {
 
 ```
 
+### TypeScript (Demo16)
+
+#### 现有项目添加 TypeScript 支持
+安装`ts-loader`：
+```bash
+yarn add ts-loader --dev
+```
+
+添加 webpack 配置：
+```js
+module.exports = {
+  // ...
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx"]
+  },
+  module: {
+    rules: [
+      { test: /\.tsx?$/, loader: "ts-loader" }
+    ],
+  },
+  // ...
+}
+```
+
+添加 TypeScript 配置文件`tsconfig.json`：
+```json
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "jsx": "react"
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+```
+
+TypeScript 文件调用原生 JS 的模块文件，在`"noImplicitAny": true`模式下直接导入模块会出现`Could not find a declaration file for module `，这时需要为被调用的模块编写声明文件（.d.ts）：
+```js
+// app.ts
+import * as A from './A'
+A.fun()
+
+// A.js
+export const fun = () => { console.log('fun') }
+
+// 可在 A.js 所在目录添加文件 A.d.ts
+export declare const fun: Function
+```
