@@ -1207,3 +1207,6 @@ export const fun = () => { console.log('fun') }
 // 可在 A.js 所在目录添加文件 A.d.ts
 export declare const fun: Function
 ```
+
+为第三方 npm 模块编写声明文件：
+> https://medium.com/@chris_72272/migrating-to-typescript-write-a-declaration-file-for-a-third-party-npm-module-b1f75808ed2

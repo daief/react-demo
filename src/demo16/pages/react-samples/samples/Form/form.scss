@@ -1,0 +1,10 @@
+.form__item {
+  margin: 5px 0;
+
+  input, select {
+    outline: none;
+    border: 1px solid #ccc;
+    height: 30px;
+    line-height: 30px;
+  }
+}
