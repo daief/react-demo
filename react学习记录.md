@@ -1210,3 +1210,13 @@ export declare const fun: Function
 
 为第三方 npm 模块编写声明文件：
 > https://medium.com/@chris_72272/migrating-to-typescript-write-a-declaration-file-for-a-third-party-npm-module-b1f75808ed2
+> Here we created our custom @types directory within the src directory so that the files will be automatically included during compilation.
+新建`src/@types/`，添加`{name}.d.ts`，例如：rc-form.d.ts：
+```js
+// rc-form 十分简单的声明文件
+declare module "rc-form" {
+  export const createForm: any;
+  export const createFormField: any;
+  export const formShape: any;
+}
+```
