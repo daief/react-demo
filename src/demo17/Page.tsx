@@ -5,6 +5,7 @@ import Video from './Video'
 
 export default class Page extends React.Component {
   player: any
+  pl: Video
 
   state = {
     playState: {},
@@ -31,6 +32,8 @@ export default class Page extends React.Component {
         this.player && this.player.pause()
       }
     })
+
+    console.log(this.pl, this.player)
   }
 
   render() {
@@ -53,6 +56,7 @@ export default class Page extends React.Component {
         <Video
           src="http://113.215.26.195/mp4files/523100000066F578/tonghang.video.huizhifintech.com/Act-ss-mp4-ld/3J2wAZwNAgjEfsjycA67iXVWM2t8CNjk/1duotiaotuihuoke.mp4"
           preload="metadata"
+          ref={el => this.pl = el}
         />
       </div>
     )
