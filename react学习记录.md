@@ -1220,3 +1220,9 @@ declare module "rc-form" {
   export const formShape: any;
 }
 ```
+
+[what's declare](https://stackoverflow.com/questions/35019987/what-does-declare-do-in-export-declare-class-actions)
+
+配置 webpack aliases:
+
+[write declare file for every js](https://stackoverflow.com/questions/45804916/typings-for-sub-folders-inside-a-root-index-d-ts)
