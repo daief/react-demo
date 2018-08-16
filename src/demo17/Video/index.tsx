@@ -13,7 +13,7 @@ interface VideoProps {
   src: string
   width?: number
 
-  ref?: Function
+  getState: Function
 }
 
 type EventVideo = React.SyntheticEvent<HTMLVideoElement>
@@ -21,7 +21,7 @@ type EventVideo = React.SyntheticEvent<HTMLVideoElement>
 export default class Video extends React.Component<VideoProps> {
   static defaultProps = {
     autoplay: false,
-    controls: false,
+    controls: true,
     loop: false,
     muted: false,
     preload: 'metadata',
@@ -32,12 +32,35 @@ export default class Video extends React.Component<VideoProps> {
     // console.log(this.props.ref)
   }
 
-  events = {
+  private events = {
     playing: (e: EventVideo) => {
       console.log({...e})
     },
     timeUpdate: (e: EventVideo) => {
-      console.log('timeupdate', e)
+      const video: any = e.target
+      const {currentSrc, duration, currentTime, seekingTime, seeking, paused, autoPaused, ended, playbackRate, muted, volume, readyState,
+         networkState, videoWidth, videoHeight, hasStarted, isFullscreen, src, preload, waiting} = video
+      this.props.getState({
+        currentSrc,
+        duration,
+        currentTime,
+        seekingTime,
+        seeking,
+        paused,
+        autoPaused,
+        ended,
+        playbackRate,
+        muted,
+        volume,
+        readyState,
+        networkState,
+        videoWidth, videoHeight,
+        hasStarted,
+        isFullscreen,
+        src,
+        preload,
+        waiting,
+      })
     },
   }
 
@@ -56,10 +79,10 @@ export default class Video extends React.Component<VideoProps> {
 
         >
         </video>
-        <div className="controls">
+        {/* <div className="controls">
           <i className="icon play" />
           <i className="icon play" />
-        </div>
+        </div> */}
       </div>
     )
   }

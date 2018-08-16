@@ -57,6 +57,7 @@ export default class Page extends React.Component {
           src="http://113.215.26.195/mp4files/523100000066F578/tonghang.video.huizhifintech.com/Act-ss-mp4-ld/3J2wAZwNAgjEfsjycA67iXVWM2t8CNjk/1duotiaotuihuoke.mp4"
           preload="metadata"
           ref={el => this.pl = el}
+          getState={(state: any) => console.log(state)}
         />
       </div>
     )

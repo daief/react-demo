@@ -9,7 +9,7 @@ import * as React from "react";
 import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 import Page from './Page';
 
-export default class Demo16 extends React.Component {
+export default class Demo17 extends React.Component {
   render() {
     return (
       <Router>
