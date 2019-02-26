@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.scss';
+import './style.less';
 import { alert } from './Alert';
 
 export default class Demo15 extends React.Component {

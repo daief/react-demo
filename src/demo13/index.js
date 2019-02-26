@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import FadeRoute from './FadeRoute';
-import './styles/app.scss';
+import './styles/app.less';
 import D1 from './D1';
 import D2 from './D2';
 import D3 from './D3';

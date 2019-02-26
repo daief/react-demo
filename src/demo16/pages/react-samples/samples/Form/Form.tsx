@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './form.scss';
+import './form.less';
 
 interface IFormProps {
   form: any;

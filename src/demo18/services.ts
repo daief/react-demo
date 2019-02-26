@@ -26,16 +26,23 @@ myContainer
   .bind<Services>(TYPES.Normal)
   .to(injectable()(class { }))
   .onActivation((context, service) => {
-    let handler = {
+    // const handler = {
+    //   get(target: any, propKey: string, receiver: any) {
+    //     const api = propKey.replace(/^(get|post)/i, '');
+    //     const method = RegExp.$1;
+    //     const url = getReqUrl(api.replace(/^[a-z]/i, first => first.toLowerCase()));
+    //     return (...params: any[]) => fetch(url, { method });
+    //   }
+    // };
+
+    return new Proxy(service, {
       get(target: any, propKey: string, receiver: any) {
         const api = propKey.replace(/^(get|post)/i, '');
         const method = RegExp.$1;
         const url = getReqUrl(api.replace(/^[a-z]/i, first => first.toLowerCase()));
         return (...params: any[]) => fetch(url, { method });
       }
-    };
-
-    return new Proxy(service, handler);
+    });
   });
 
 myContainer

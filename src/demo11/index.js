@@ -1,7 +1,7 @@
 import React from 'react'
 import Tabs from './Tabs';
 import TabPane from './TabPane'
-import './style.scss'
+import './style.less'
 
 export default class Demo11 extends React.Component {
   constructor(props) {
