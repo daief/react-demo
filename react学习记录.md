@@ -183,7 +183,7 @@ export default class Demo05 extends React.Component {
 
   render() {
     return (
-      {/* 点击增加计数 */}
+      {/* 点击增加计数 */}
       <p onClick={this.handleClick}>count: {this.state.count}. click to add.</p>
     )
   }
@@ -208,7 +208,7 @@ export default class Demo06 extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  // 在 change 事件中设置 state
+  // 在 change 事件中设置 state
   handleChange(e) {
     this.setState({
       value: e.target.value
@@ -310,7 +310,7 @@ class Display extends React.Component {
 ### Mobx（Demo08）
 [中文文档](http://cn.mobx.js.org/)
 
-基本使用：
+基本使用：
 - observable： 用来绑定需要观察变动的数据
 - computed：计算属性，与 Vue 的类似
 - autorun：用来注册数据变化时的响应操作，该方法返回一个函数，调用后取消响应的注册
@@ -321,7 +321,7 @@ class Display extends React.Component {
 ```javascript
 // store.js
 import {
-  // 使用注解的话直接用这个
+  // 使用注解的话直接用这个
   observable,
   // 不使用@注解的时候用该方法
   extendObservable,
@@ -535,7 +535,7 @@ withRouter 方法：
 
 #### 要点
 
-应用中所有`state`都以一个对象树的形式存在一个单一的`store`中。**唯一改变`state`的方式是触发`action`**，一个描述发生什么的对象。为了描述`action`如何改变`state`树，需要编写`reducers`。
+应用中所有`state`都以一个对象树的形式存在一个单一的`store`中。**唯一改变`state`的方式是触发`action`**，一个描述发生什么的对象。为了描述`action`如何改变`state`树，需要编写`reducers`。
 
 #### Action
 本质是 JS 普通对象，约定，**`action`内必须使用一个字符串类型的`type`字段来表示将要执行的动作**。
@@ -688,7 +688,7 @@ export default Index
 使用 connect() 前，需要先定义 mapStateToProps 这个函数来指定如何把当前 Redux store state 映射到展示组件的 props 中。
 
 ```js
-// Link.js ------------- 展示组件
+// Link.js ------------- 展示组件
 import React from 'react';
 
 const Link = ({ active, children, onClick }) => {
@@ -711,7 +711,7 @@ const Link = ({ active, children, onClick }) => {
 export default Link;
 
 
-// FilterLink.js ------------- 容器组件
+// FilterLink.js ------------- 容器组件
 import { connect } from 'react-redux';
 import { setVisibilityFilter } from '../../actions';
 import Link from '../Link';
