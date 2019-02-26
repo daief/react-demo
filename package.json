@@ -33,8 +33,7 @@
     "react-swipeable-views": "^0.12.12",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
-    "reflect-metadata": "^0.1.12",
-    "video-react": "0.10.5"
+    "reflect-metadata": "^0.1.12"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.116",
